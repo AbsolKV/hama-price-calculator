@@ -1,0 +1,26 @@
+
+{
+  "name": "HAMA PRICE CALCULATOR",
+  "short_name": "HAMA PRICE",
+  "description": "Calculadora de precios para productos de Hama beads.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff0f6",
+  "theme_color": "#e94b96",
+  "icons": [
+    {
+      "src": "./icons/hama-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/hama-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
