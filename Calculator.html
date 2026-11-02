@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculadora de Precios de Hama | Frikiabsol</title>
+
+    <style>
+
+        /* =========================
+           PALETA DE COLORES
+        ========================= */
+
+        :root {
+            --pink-bg: #fff0f6;
+            --pink-light: #ffe0ed;
+            --pink-card: #fffafd;
+            --pink-border: #f5a5c7;
+            --pink-accent: #e94b96;
+            --pink-dark: #bd246e;
+            --pink-hover: #cf347f;
+            --plum: #572342;
+            --muted: #a47791;
+            --white: #ffffff;
+        }
+
+        /* =========================
+           GENERAL
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: var(--pink-bg);
+            color: var(--plum);
+            min-height: 100vh;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: auto;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: var(--pink-dark);
+            font-size: 25px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--pink-dark);
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           CALCULATOR CARD
+        ========================= */
+
+        .calculator {
+            background: var(--pink-card);
+            padding: 25px;
+            border: 2px solid var(--pink-border);
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(201, 64, 126, 0.10);
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 18px;
+            color: var(--pink-dark);
+        }
+
+        /* =========================
+           INPUTS
+        ========================= */
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 13px;
+            border: 1.5px solid var(--pink-border);
+            border-radius: 10px;
+            font-size: 16px;
+            color: var(--plum);
+            background: var(--white);
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--pink-accent);
+            box-shadow: 0 0 0 3px rgba(233, 75, 150, 0.12);
+        }
+
+        /* =========================
+           BEAD SELECTOR
+        ========================= */
+
+        .bead-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .bead-option {
+            flex: 1;
+            border: 1.5px solid var(--pink-border);
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 15px;
+            background: var(--white);
+            transition: 0.2s;
+        }
+
+        .bead-option:has(input:checked) {
+            background: var(--pink-light);
+            border: 2px solid var(--pink-accent);
+            color: var(--pink-dark);
+        }
+
+        .bead-option input {
+            margin-right: 5px;
+            accent-color: var(--pink-accent);
+        }
+
+        .bead-option small {
+            display: block;
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* =========================
+           CALCULATE BUTTON
+        ========================= */
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 12px;
+            background: var(--pink-accent);
+            color: var(--white);
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: var(--pink-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(201, 64, 126, 0.20);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* =========================
+           RESULTS
+        ========================= */
+
+        .results {
+            display: none;
+            margin-top: 25px;
+            padding-top: 22px;
+            border-top: 2px dashed var(--pink-border);
+        }
+
+        .result-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            margin: 15px 0;
+        }
+
+        .result-line span:last-child {
+            font-weight: bold;
+            color: var(--pink-dark);
+            text-align: right;
+        }
+
+        /* =========================
+           FINAL PRICE
+        ========================= */
+
+        .final-price {
+            background: var(--pink-light);
+            border: 2px solid var(--pink-accent);
+            border-radius: 15px;
+            padding: 20px 12px;
+            margin-top: 22px;
+            text-align: center;
+        }
+
+        .final-price p {
+            font-size: 13px;
+            font-weight: 900;
+            color: var(--pink-dark);
+            margin-bottom: 10px;
+        }
+
+        .final-price h2 {
+            font-size: 34px;
+            font-weight: 900;
+            color: var(--pink-dark);
+        }
+
+        /* =========================
+           ERROR MESSAGE
+        ========================= */
+
+        .error {
+            color: #c62858;
+            font-size: 13px;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 22px;
+        }
+
+        /* =========================
+           MOBILE RESPONSIVE
+        ========================= */
+
+        @media (max-width: 380px) {
+
+            .calculator {
+                padding: 18px;
+            }
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            .bead-options {
+                gap: 7px;
+            }
+
+            .result-line {
+                font-size: 12px;
+            }
+
+            .final-price h2 {
+                font-size: 29px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+
+            <h1>CALCULADORA DE PRECIOS DE HAMA</h1>
+
+            <p>Frikiabsol.sv · Handmade with love ♡</p>
+
+        </header>
+
+
+        <main class="calculator">
+
+            <h3 class="section-title">
+                ✿ Dimensiones del diseño
+            </h3>
+
+            <div class="input-group">
+
+                <label for="height">
+                    Altura del diseño
+                </label>
+
+                <input
+                    type="number"
+                    id="height"
+                    min="1"
+                    step="1"
+                    placeholder="Ej. 20"
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="width">
+                    Anchura del diseño
+                </label>
+
+                <input
+                    type="number"
+                    id="width"
+                    min="1"
+                    step="1"
+                    placeholder="Ej. 20"
+                >
+
+            </div>
+
+
+            <h3 class="section-title">
+                ♡ Selección de Hama Beads
+            </h3>
+
+
+            <div class="bead-options">
+
+                <label class="bead-option">
+
+                    <input
+                        type="radio"
+                        name="bead"
+                        value="mini"
+                        checked
+                    >
+
+                    <strong>MINI</strong>
+
+                    <small>$0.003 / bead</small>
+
+                </label>
+
+
+                <label class="bead-option">
+
+                    <input
+                        type="radio"
+                        name="bead"
+                        value="midi"
+                    >
+
+                    <strong>MIDI</strong>
+
+                    <small>$0.005 / bead</small>
+
+                </label>
+
+            </div>
+
+
+            <button onclick="calculatePrice()">
+                CALCULAR PRECIO ♡
+            </button>
+
+
+            <p id="error" class="error"></p>
+
+
+            <section id="results" class="results">
+
+                <h3 class="section-title">
+                    ✿ Resumen de costos
+                </h3>
+
+
+                <div class="result-line">
+
+                    <span>Tipo de bead:</span>
+
+                    <span id="r-type"></span>
+
+                </div>
+
+
+                <div class="result-line">
+
+                    <span>Cantidad de beads usados:</span>
+
+                    <span id="r-quantity"></span>
+
+                </div>
+
+
+                <div class="result-line">
+
+                    <span>Costo de materiales:</span>
+
+                    <span id="r-material"></span>
+
+                </div>
+
+
+                <div class="result-line">
+
+                    <span>Mano de obra (50%):</span>
+
+                    <span id="r-labor"></span>
+
+                </div>
+
+
+                <div class="result-line">
+
+                    <span>Otros gastos (30%):</span>
+
+                    <span id="r-expenses"></span>
+
+                </div>
+
+
+                <div class="result-line">
+
+                    <span>Costo total de producción:</span>
+
+                    <span id="r-total"></span>
+
+                </div>
+
+
+                <div class="result-line">
+
+                    <span>Ganancia (135%):</span>
+
+                    <span id="r-profit"></span>
+
+                </div>
+
+
+                <div class="final-price">
+
+                    <p>♡ PRECIO FINAL DE VENTA ♡</p>
+
+                    <h2 id="r-final"></h2>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+
+            © 2026 Frikiabsol.sv · Calculadora de Precios de Hama ♡
+
+        </footer>
+
+    </div>
+
+
+    <script>
+
+        // =========================
+        // CONFIGURACION DE COSTOS
+        // =========================
+
+        const LABOR_PERCENT = 0.50;
+        const OTHEREXP_PERCENT = 0.30;
+        const PROFIT_PERCENT = 1.35;
+
+
+        // =========================
+        // FUNCION DE CALCULO
+        // =========================
+
+        function calculatePrice() {
+
+            const height = Number(
+                document.getElementById("height").value
+            );
+
+            const width = Number(
+                document.getElementById("width").value
+            );
+
+            const beadType = document.querySelector(
+                'input[name="bead"]:checked'
+            ).value;
+
+
+            const error = document.getElementById("error");
+
+            const results = document.getElementById("results");
+
+
+            // VALIDACION DE ENTRADAS
+
+            if (
+                !Number.isInteger(height) ||
+                !Number.isInteger(width) ||
+                height <= 0 ||
+                width <= 0
+            ) {
+
+                error.textContent =
+                    "ERROR: Ingrese dimensiones enteras mayores a cero.";
+
+                results.style.display = "none";
+
+                return;
+
+            }
+
+
+            error.textContent = "";
+
+
+            // SELECCION DE PRECIO POR BEAD
+
+            let beadPrice;
+
+            if (beadType === "mini") {
+
+                beadPrice = 0.003;
+
+            } else {
+
+                beadPrice = 0.005;
+
+            }
+
+
+            // CALCULOS DE PRODUCCION
+
+            const totalBeads = height * width;
+
+            const productionCost = totalBeads * beadPrice;
+
+            const labor = productionCost * LABOR_PERCENT;
+
+            const otherExpenses =
+                productionCost * OTHEREXP_PERCENT;
+
+            const totalCosts =
+                productionCost + labor + otherExpenses;
+
+            const profit = totalCosts * PROFIT_PERCENT;
+
+            const finalPrice = totalCosts + profit;
+
+
+            // FORMATO MONETARIO
+
+            const money = new Intl.NumberFormat("en-US", {
+
+                style: "currency",
+
+                currency: "USD",
+
+                minimumFractionDigits: 2,
+
+                maximumFractionDigits: 2
+
+            });
+
+
+            // MOSTRAR RESULTADOS
+
+            document.getElementById("r-type").textContent =
+                beadType.toUpperCase();
+
+            document.getElementById("r-quantity").textContent =
+                totalBeads;
+
+            document.getElementById("r-material").textContent =
+                money.format(productionCost);
+
+            document.getElementById("r-labor").textContent =
+                money.format(labor);
+
+            document.getElementById("r-expenses").textContent =
+                money.format(otherExpenses);
+
+            document.getElementById("r-total").textContent =
+                money.format(totalCosts);
+
+            document.getElementById("r-profit").textContent =
+                money.format(profit);
+
+            document.getElementById("r-final").textContent =
+                money.format(finalPrice);
+
+
+            results.style.display = "block";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
